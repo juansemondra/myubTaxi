@@ -1,58 +1,43 @@
-import org.zeromq.ZMQ;
+import java.util.Random;
 
-public class TaxiApp implements Runnable {
-    private int id;
-    private int[] position;
-    private int speed;
-    private int maxServices;
-    private ZMQ.Context context;
-    private ZMQ.Socket publisher;
-    
-    private static final int PUERTO_POSICIONES = 5556;
+public class TaxiApp {
+    public static void main(String[] args) {
 
-    public TaxiApp(int id, int[] startPosition, int speed, int maxServices, String serverIP) {
-        this.id = id;
-        this.position = startPosition;
-        this.speed = speed;
-        this.maxServices = maxServices;
-        this.context = ZMQ.context(1);
-        this.publisher = context.socket(ZMQ.PUB);
-        this.publisher.connect("tcp://" + serverIP + ":" + PUERTO_POSICIONES);
-    }
+        Random random = new Random();
 
-    @Override
-    public void run() {
-        int servicesDone = 0;
-        while (servicesDone < maxServices) {
-            try {
-                // Simular movimiento cada 30 minutos del sistema (30 segundos reales)
-                Thread.sleep(30000); 
-                
-                move();
-                
-                // Publicar la nueva posición
-                String message = String.format("Taxi %d en posición (%d, %d)", id, position[0], position[1]);
-                publisher.send(message);
-                System.out.println(message);
+        int id = random.nextInt(1, 999999);
+        int gridN = 10;
+        int gridM = 10;
+        int posX = random.nextInt(gridN);
+        int posY = random.nextInt(gridM);
+        int speed = 2;
+        int maxServices = 3;
 
-                // Lógica para recibir asignación de servicio...
+        Taxi taxi = new Taxi(id, gridN, gridM, posX, posY, speed, maxServices);
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        Thread moveThread = new Thread(() -> {
+            while (!taxi.hasCompletedServices()) {
+                try {
+                    Thread.sleep(5000);
+                    taxi.move();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
+        });
+
+        //Thread listenThread = new Thread(taxi::listenForAssignments);
+
+        moveThread.start();
+        //listenThread.start();
+
+        try {
+            moveThread.join();
+            //listenThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        System.out.println("Taxi " + id + " ha completado sus servicios del día.");
-        publisher.close();
-        context.close();
-    }
-
-    private void move() {
-        // Lógica para mover el taxi en la cuadrícula según su velocidad
-        if (speed > 0) {
-            // Movimiento horizontal o vertical
-            position[0] += (Math.random() > 0.5 ? 1 : -1); // Movimiento aleatorio en X
-            position[1] += (Math.random() > 0.5 ? 1 : -1); // Movimiento aleatorio en Y
-        }
+        taxi.close();
     }
 }
