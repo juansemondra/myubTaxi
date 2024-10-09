@@ -13,6 +13,8 @@ public class TaxiApp {
         int speed = 2;
         int maxServices = 3;
 
+        System.out.println("3");
+
         Taxi taxi = new Taxi(id, gridN, gridM, posX, posY, speed, maxServices);
 
         Thread moveThread = new Thread(() -> {
@@ -26,14 +28,11 @@ public class TaxiApp {
             }
         });
 
-        //Thread listenThread = new Thread(taxi::listenForAssignments);
 
         moveThread.start();
-        //listenThread.start();
 
         try {
             moveThread.join();
-            //listenThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

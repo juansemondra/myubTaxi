@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="myUberTaxi:TaxiApp">
+    <output-path>$PROJECT_DIR$/out/artifacts/myUberTaxi_TaxiApp</output-path>
+    <root id="archive" name="myUberTaxi.jar">
+      <element id="module-output" name="myUberTaxi" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-simple/1.7.32/slf4j-simple-1.7.32.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/zeromq/jeromq/0.5.2/jeromq-0.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
